@@ -25,7 +25,7 @@ class WebGet(object):
         self.timeout = 10
 
         self.passthrough = passthrough
-        
+
         if callable(cb):
             self.cb = cb
         else:
