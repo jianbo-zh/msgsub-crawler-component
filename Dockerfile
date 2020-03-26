@@ -1,4 +1,4 @@
-FROM python:3.8.2-alpine3.11-gcc
+FROM python:3.8.2-alpine3.11-me
 ENV PATH /usr/local/bin:$PATH
 
 ADD . /code
