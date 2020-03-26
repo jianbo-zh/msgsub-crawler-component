@@ -1,15 +1,13 @@
-#!/usr/bin/env python
-#-*-coding:utf-8-*-
-
-from loggerz import logger
 from kafka import KafkaConsumer
 from kafka import KafkaProducer
 import click
 import json
 import time
-import helperz
-import threadpool
-import webget
+
+from .logger import logger
+from . import helpers
+from . import threadpool
+from . import webget
 
 
 @click.command()
@@ -59,7 +57,7 @@ import webget
     help="log level [1-5]",
     metavar="logLevel",
 )
-def consumeCircle(broker_list, from_topic, to_topic, group_id, thread_count, level):
+def main(broker_list, from_topic, to_topic, group_id, thread_count, level):
 
     try:
         # 设置线程池数量
@@ -90,10 +88,10 @@ def consumeCircle(broker_list, from_topic, to_topic, group_id, thread_count, lev
                 {
                     "task": tasks,
                     "content_type": res.headers.get("content-type"),
-                    "content": str(res.content, encoding='utf-8')
+                    "content": str(res.content, encoding="utf-8"),
                 }
             )
-            producer.send(to_topic, value=bytes(value, encoding='utf-8'))
+            producer.send(to_topic, value=bytes(value, encoding="utf-8"))
 
         for msg in consumer:
             logger.debug(
@@ -104,7 +102,7 @@ def consumeCircle(broker_list, from_topic, to_topic, group_id, thread_count, lev
             # 消息数据
             try:
                 msg_data = json.loads(msg.value)
-                
+
             except json.JSONDecodeError as e:
                 logger.warning("msg.value[%s] can not decode", msg.value)
                 continue
@@ -117,7 +115,7 @@ def consumeCircle(broker_list, from_topic, to_topic, group_id, thread_count, lev
 
             is_msg_ok = True
 
-            if url is None or not helperz.is_valid_url(url):
+            if url is None or not helpers.is_valid_url(url):
                 logger.error("msg_data.url: <%s> is not valid!" % url)
                 is_msg_ok = False
 
@@ -135,6 +133,3 @@ def consumeCircle(broker_list, from_topic, to_topic, group_id, thread_count, lev
 
     finally:
         tpool.close_thread_pool()
-
-if __name__ == "__main__":
-    consumeCircle()

@@ -1,5 +1,5 @@
 import requests
-import const
+from . import consts
 
 
 class WebGet(object):
@@ -13,9 +13,9 @@ class WebGet(object):
         url,
         cb=None,
         passthrough=None,
-        method=const.METHOD_GET,
-        content_type=const.CT_HTML,
-        render_type=const.RT_STATIC,
+        method=consts.METHOD_GET,
+        content_type=consts.CT_HTML,
+        render_type=consts.RT_STATIC,
         timeout=10,
     ):
         self.url = url
@@ -32,10 +32,10 @@ class WebGet(object):
             self.cb = lambda x: x
 
     def __call__(self):
-        if self.render_type == const.RT_DYNAMIC:
+        if self.render_type == consts.RT_DYNAMIC:
             return self.get_dynamic_content()
 
-        elif self.render_type == const.RT_STATIC:
+        elif self.render_type == consts.RT_STATIC:
             return self.get_static_content()
 
         else:
@@ -43,10 +43,10 @@ class WebGet(object):
 
     def get_static_content(self):
         try:
-            if self.method == const.METHOD_GET:
+            if self.method == consts.METHOD_GET:
                 res = requests.get(self.url, timeout=self.timeout)
 
-            elif self.method == const.METHOD_POST:
+            elif self.method == consts.METHOD_POST:
                 res = requests.post(self.url, timeout=self.timeout)
 
             else:
